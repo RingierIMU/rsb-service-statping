@@ -1,0 +1,6 @@
+#!/bin/bash
+
+MESSAGE=${1}
+HOOK="${RSB_SLACK_WEBHOOK:-https://hooks.slack.com/services/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}"
+
+curl -X POST -H "Content-type: application/json" -d "{\"text\":\"${MESSAGE}\"}" ${HOOK}
