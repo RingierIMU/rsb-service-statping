@@ -1,15 +1,14 @@
-import Vue from "vue";
 import axios from 'axios'
-import * as Sentry from "@sentry/browser";
-import * as Integrations from "@sentry/integrations";
+
 const qs = require('querystring');
+axios.defaults.withCredentials = true
 
 const tokenKey = "statping_auth";
-const errorReporter = "https://bed4d75404924cb3a799e370733a1b64@sentry.statping.com/3"
 
 class Api {
   constructor() {
-    axios.defaults.withCredentials = true
+    this.version = "0.90.74";
+    this.commit = "2612402a7782f28ca0b7fc10c941d8c4a1a5acc6";
   }
 
   async oauth() {
@@ -53,17 +52,17 @@ class Api {
     return axios.post('api/services/' + data.id, data).then(response => (response.data))
   }
 
-  async service_hits(id, start, end, group, fill=true) {
+  async service_hits(id, start, end, group, fill = true) {
     return axios.get('api/services/' + id + '/hits_data?start=' + start + '&end=' + end + '&group=' + group + '&fill=' + fill).then(response => (response.data))
   }
 
-    async service_ping(id, start, end, group, fill=true) {
-        return axios.get('api/services/' + id + '/ping_data?start=' + start + '&end=' + end + '&group=' + group + '&fill=' + fill).then(response => (response.data))
-    }
+  async service_ping(id, start, end, group, fill = true) {
+    return axios.get('api/services/' + id + '/ping_data?start=' + start + '&end=' + end + '&group=' + group + '&fill=' + fill).then(response => (response.data))
+  }
 
-    async service_failures_data(id, start, end, group, fill=true) {
-        return axios.get('api/services/' + id + '/failure_data?start=' + start + '&end=' + end + '&group=' + group + '&fill=' + fill).then(response => (response.data))
-    }
+  async service_failures_data(id, start, end, group, fill = true) {
+    return axios.get('api/services/' + id + '/failure_data?start=' + start + '&end=' + end + '&group=' + group + '&fill=' + fill).then(response => (response.data))
+  }
 
   async service_uptime(id, start, end) {
     return axios.get('api/services/' + id + '/uptime_data?start=' + start + '&end=' + end).then(response => (response.data))
@@ -74,7 +73,7 @@ class Api {
   }
 
   async service_failures(id, start, end, limit = 999, offset = 0) {
-    return axios.get('api/services/' + id + '/failures?start=' + start + '&end=' + end + '&limit=' + limit+ '&offset=' + offset).then(response => (response.data))
+    return axios.get('api/services/' + id + '/failures?start=' + start + '&end=' + end + '&limit=' + limit + '&offset=' + offset).then(response => (response.data))
   }
 
   async service_failures_delete(service) {
@@ -89,16 +88,15 @@ class Api {
     return axios.post('api/reorder/services', data).then(response => (response.data))
   }
 
-    async checkins() {
-        return axios.get('api/checkins').then(response => (response.data))
-    }
+  async checkins() {
+    return axios.get('api/checkins').then(response => (response.data))
+  }
 
   async groups() {
     return axios.get('api/groups').then(response => (response.data))
   }
 
   async groups_reorder(data) {
-      window.console.log('api/reorder/groups', data)
     return axios.post('api/reorder/groups', data).then(response => (response.data))
   }
 
@@ -131,36 +129,40 @@ class Api {
   }
 
   async incident_updates(incident) {
-    return axios.get('api/incidents/'+incident.id+'/updates').then(response => (response.data))
+    return axios.get('api/incidents/' + incident.id + '/updates').then(response => (response.data))
   }
 
   async incident_update_create(update) {
-    return axios.post('api/incidents/'+update.incident+'/updates', update).then(response => (response.data))
+    return axios.post('api/incidents/' + update.incident + '/updates', update).then(response => (response.data))
   }
 
   async incident_update_delete(update) {
-    return axios.delete('api/incidents/'+update.incident+'/updates/'+update.id).then(response => (response.data))
+    return axios.delete('api/incidents/' + update.incident + '/updates/' + update.id).then(response => (response.data))
   }
 
-    async incidents_service(id) {
-        return axios.get('api/services/'+id+'/incidents').then(response => (response.data))
-    }
+  async incidents_service(id) {
+    return axios.get('api/services/' + id + '/incidents').then(response => (response.data))
+  }
 
-    async incident_create(service_id, data) {
-        return axios.post('api/services/'+service_id+'/incidents', data).then(response => (response.data))
-    }
+  async incident_create(service_id, data) {
+    return axios.post('api/services/' + service_id + '/incidents', data).then(response => (response.data))
+  }
 
-    async incident_delete(incident) {
-        return axios.delete('api/incidents/'+incident.id).then(response => (response.data))
-    }
+  async incident_delete(incident) {
+    return axios.delete('api/incidents/' + incident.id).then(response => (response.data))
+  }
 
-    async checkin_create(data) {
-        return axios.post('api/checkins', data).then(response => (response.data))
-    }
+  async checkin(api) {
+    return axios.get('api/checkins/' + api).then(response => (response.data))
+  }
 
-    async checkin_delete(checkin) {
-        return axios.delete('api/checkins/'+checkin.api_key).then(response => (response.data))
-    }
+  async checkin_create(data) {
+    return axios.post('api/checkins', data).then(response => (response.data))
+  }
+
+  async checkin_delete(checkin) {
+    return axios.delete('api/checkins/' + checkin.api_key).then(response => (response.data))
+  }
 
   async messages() {
     return axios.get('api/messages').then(response => (response.data))
@@ -198,14 +200,6 @@ class Api {
     return axios.get('api/renew').then(response => (response.data))
   }
 
-  async cache() {
-    return axios.get('api/cache').then(response => (response.data))
-  }
-
-  async clearCache() {
-    return axios.get('api/clear_cache').then(response => (response.data))
-  }
-
   async logs() {
     return axios.get('api/logs').then(response => (response.data)) || []
   }
@@ -230,6 +224,15 @@ class Api {
     return axios.post('api/theme', data).then(response => (response.data))
   }
 
+  async import(data) {
+    return axios.post('api/settings/import', data).then(response => (response.data))
+  }
+
+  async check_token(token) {
+    const f = {token: token}
+    return axios.post('api/users/token', qs.stringify(f)).then(response => (response.data))
+  }
+
   async login(username, password) {
     const f = {username: username, password: password}
     return axios.post('api/login', qs.stringify(f)).then(response => (response.data))
@@ -250,6 +253,14 @@ class Api {
     })
   }
 
+  async configs() {
+    return axios.get('api/settings/configs').then(response => (response.data)) || []
+  }
+
+  async configs_save(data) {
+    return axios.post('api/settings/configs', data).then(response => (response.data)) || []
+  }
+
   token() {
     return $cookies.get(tokenKey);
   }
@@ -263,15 +274,12 @@ class Api {
     }
   }
 
-  async allActions(...all) {
-    await axios.all([all])
+  async github_release() {
+    return fetch('https://api.github.com/repos/statping/statping/releases/latest').then(response => response.json())
   }
 
-  async sentry_init() {
-    Sentry.init({
-      dsn: errorReporter,
-      integrations: [new Integrations.Vue({Vue, attachProps: true})],
-    });
+  async allActions(...all) {
+    await axios.all([all])
   }
 
 }

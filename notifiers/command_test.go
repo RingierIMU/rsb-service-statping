@@ -1,6 +1,9 @@
 package notifiers
 
 import (
+	"testing"
+	"time"
+
 	"github.com/statping/statping/database"
 	"github.com/statping/statping/types/core"
 	"github.com/statping/statping/types/failures"
@@ -10,11 +13,10 @@ import (
 	"github.com/statping/statping/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 func TestCommandNotifier(t *testing.T) {
+	t.Parallel()
 	t.SkipNow()
 	err := utils.InitLogs()
 	require.Nil(t, err)
@@ -25,9 +27,9 @@ func TestCommandNotifier(t *testing.T) {
 	core.Example()
 
 	t.Run("Load Command", func(t *testing.T) {
-		Command.Host = "/bin/echo"
-		Command.Var1 = "service {{.Service.Domain}} is online"
-		Command.Var2 = "service {{.Service.Domain}} is offline"
+		Command.Host = null.NewNullString("/bin/echo")
+		Command.Var1 = null.NewNullString("service {{.Service.Domain}} is online")
+		Command.Var2 = null.NewNullString("service {{.Service.Domain}} is offline")
 		Command.Delay = time.Duration(100 * time.Millisecond)
 		Command.Limits = 99
 		Command.Enabled = null.NewNullBool(true)
